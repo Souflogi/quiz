@@ -13,6 +13,7 @@ import Footer from "./Footer";
 import ReviewAnswers from "./ReviewAnswers";
 
 const SECs_PER_QUESTION = 60;
+const API_KEY = "$2a$10$eo2ivnUnHgDq76H5J4jbLuTquIKreKeji40mzWwJS7/H302VZz8kC";
 
 function timeCalculator(arrayLength) {
   return Math.floor((arrayLength / 2) * SECs_PER_QUESTION);
@@ -129,10 +130,21 @@ export default function App() {
       console.log("loading");
       dispatch({ type: "RequestSent" });
       try {
-        const resp = await fetch("http://localhost:8000/questions");
+        const resp = await fetch(
+          "https://api.jsonbin.io/v3/b/666b0e7bad19ca34f87886fd",
+          {
+            headers: {
+              "X-Master-Key": API_KEY,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
         const data = await resp.json();
+
         if (!data) throw new Error("Something is wrong");
-        dispatch({ type: "dataReceived", payload: data });
+        console.log(data);
+        dispatch({ type: "dataReceived", payload: data.record.questions });
       } catch (error) {
         dispatch({ type: "DataFailed" });
       }
