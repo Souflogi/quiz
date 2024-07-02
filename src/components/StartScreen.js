@@ -7,7 +7,10 @@ function StartScreen({ dispatch, totalQuestions, difficulty }) {
         <select
           value={difficulty}
           onChange={e =>
-            dispatch({ type: "diffChange", payload: Number(e.target.value) })
+            dispatch({
+              type: "CHANGE_DIFFICULTY",
+              payload: Number(e.target.value),
+            })
           }
         >
           <option value="10">Easy</option>
@@ -16,7 +19,7 @@ function StartScreen({ dispatch, totalQuestions, difficulty }) {
         </select>
         <button
           className="btn "
-          onClick={() => dispatch({ type: "QuizStarts" })}
+          onClick={() => dispatch({ type: "QUIZ_STARTED" })}
         >
           Lest's Start!
         </button>

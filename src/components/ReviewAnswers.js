@@ -4,8 +4,8 @@ import Question from "./Question";
 function ReviewAnswers({
   questions,
   dispatch,
-  index,
-  answers,
+  currentQuestionIndex,
+  userAnswers,
   score,
   totalPoints,
   totalQuestions,
@@ -13,30 +13,32 @@ function ReviewAnswers({
   return (
     <>
       <Progress
-        index={index}
+        currentQuestionIndex={currentQuestionIndex}
         totalQuestions={totalQuestions}
         totalPoints={totalPoints}
         score={score}
-        clickedAnswer={answers[index]}
+        clickedAnswer={userAnswers[currentQuestionIndex]}
       />
       <Question
-        data={questions[index]}
-        dispatch={dispatch}
-        answer={answers[index]}
+        data={questions[currentQuestionIndex]}
+        selectedAnswer={userAnswers[currentQuestionIndex]}
       />
       <div className="controls">
         <button
           className="btn"
-          onClick={() => dispatch({ type: "NavigateReview", payload: -1 })}
+          onClick={() => dispatch({ type: "NAVIGATE_REVIEW", payload: -1 })}
         >
           ⬅️
         </button>
-        <button className="btn" onClick={() => dispatch({ type: "Finishing" })}>
+        <button
+          className="btn"
+          onClick={() => dispatch({ type: "FINISH_QUIZ" })}
+        >
           ❌
         </button>
         <button
           className="btn"
-          onClick={() => dispatch({ type: "NavigateReview", payload: 1 })}
+          onClick={() => dispatch({ type: "NAVIGATE_REVIEW", payload: 1 })}
         >
           ➡️
         </button>

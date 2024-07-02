@@ -1,10 +1,10 @@
 import Options from "./Options";
 
-function Question({ data, dispatch, answer }) {
+function Question({ data, dispatch, selectedAnswer }) {
   const { question, options, correctOption } = data;
 
   function onClick(index) {
-    dispatch({ type: "UserClicked", payload: index });
+    dispatch({ type: "ANSWER_SELECTED", payload: index });
   }
 
   return (
@@ -14,7 +14,7 @@ function Question({ data, dispatch, answer }) {
         options={options}
         onClick={onClick}
         correctOption={correctOption}
-        answer={answer}
+        selectedAnswer={selectedAnswer}
       />
     </>
   );

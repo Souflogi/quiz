@@ -1,18 +1,18 @@
 function Progress({
-  index,
+  currentQuestionIndex,
   totalQuestions,
   totalPoints,
   score,
-  clickedAnswer,
+  selectedAnswer,
 }) {
   return (
     <header className="progress">
       <progress
-        value={index + Number(clickedAnswer !== null)}
+        value={currentQuestionIndex + Number(selectedAnswer !== null)}
         max={totalQuestions}
       />
       <p>
-        Question <strong> {index + 1} </strong>/ {totalQuestions}
+        Question <strong> {currentQuestionIndex + 1} </strong>/ {totalQuestions}
       </p>
       <p>
         <strong>{score}</strong> / {totalPoints}

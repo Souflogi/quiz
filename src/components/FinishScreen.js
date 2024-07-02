@@ -1,14 +1,14 @@
 function FinishScreen({
   score,
+  timeRemaining,
   highScore,
   totalPoints,
   dispatch,
-  secondsRemaining,
   initialTime,
 }) {
   const percentage = (score * 100) / totalPoints;
-  const minutes = Math.floor((initialTime - secondsRemaining) / 60); //initialTime is the initial seconds amount to know how ling the user took to finish
-  const seconds = Math.floor((initialTime - secondsRemaining) % 60);
+  const minutes = Math.floor((initialTime - timeRemaining) / 60); //initialTime is the initial seconds amount to know how ling the user took to finish
+  const seconds = Math.floor((initialTime - timeRemaining) % 60);
 
   let emoji = "";
 
@@ -17,9 +17,9 @@ function FinishScreen({
   if (percentage > 50 && percentage < 70) emoji = "🙂";
   if (percentage > 70) emoji = "☺️";
 
-  function clickHandler() {
-    if (score < highScore) dispatch({ type: "StartNewGame" });
-    else dispatch({ type: "StartNewGame", payload: score });
+  function NewGamehandler() {
+    if (score < highScore) dispatch({ type: "START_NEW_GAME" });
+    else dispatch({ type: "START_NEW_GAME", payload: score });
   }
 
   return (
@@ -46,13 +46,16 @@ function FinishScreen({
         {seconds.toString().padStart(2, 0)}
       </p>
       <div className="controls">
-        <button className="btn" onClick={() => dispatch({ type: "Reviewing" })}>
+        <button
+          className="btn"
+          onClick={() => dispatch({ type: "REVIEW_ANSWERS" })}
+        >
           Review 🧾
         </button>
         <button
           className="btn"
           style={{ backgroundColor: "greenyellow", color: "#333" }}
-          onClick={() => clickHandler()}
+          onClick={() => NewGamehandler()}
         >
           New game
         </button>

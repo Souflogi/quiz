@@ -206,9 +206,11 @@ select {
   color: #45494e;
 }
 
-.answer {
+.btn-option.right-click,
+.btn-option.wrong-click {
   transform: translateX(2rem);
 }
+
 
 .result {
   background-color: var(--color-theme);

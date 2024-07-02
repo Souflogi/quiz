@@ -12,123 +12,134 @@ import Timer from "./Timer";
 import Footer from "./Footer";
 import ReviewAnswers from "./ReviewAnswers";
 
-const SECs_PER_QUESTION = 60;
-const API_KEY = "$2a$10$eo2ivnUnHgDq76H5J4jbLuTquIKreKeji40mzWwJS7/H302VZz8kC";
+// Constants
+const SECONDS_PER_QUESTION = 60; // Time allocated per question in seconds
+const API_KEY = "$2a$10$eo2ivnUnHgDq76H5J4jbLuTquIKreKeji40mzWwJS7/H302VZz8kC"; // API key for accessing the questions
 
-function timeCalculator(arrayLength) {
-  return Math.floor((arrayLength / 2) * SECs_PER_QUESTION);
+function calculateQuizTime(numQuestions) {
+  return Math.floor((numQuestions / 2) * SECONDS_PER_QUESTION);
 }
 
-/************************************************* */
+// Initial state of the application
 const initialState = {
-  questions: [],
-  difficulty: 10,
-  /* loading, error ,ready ,active, finished , */
-  status: null,
-  index: 0,
-  clickedAnswer: null,
-  answers: [] /*user answers*/,
-
-  score: 0,
-  highScore: 10,
-  secondsRemaining: 0,
-  initialTime: 0,
-  ticking: false,
+  questions: [], // Array to store quiz questions
+  difficulty: 10, // Default difficulty level
+  status: null, // Status of the quiz: loading, error, ready, active, finished, reviewing
+  currentQuestionIndex: 0, // Index of the current question
+  selectedAnswer: null, // The answer selected by the user
+  userAnswers: [], // User's answers
+  score: 0, // User's score
+  highScore: 10, // Highest score
+  timeRemaining: 0, // Time remaining for the quiz
+  initialTime: 0, // Initial time set for the quiz
+  timerRunning: false, // Whether the timer is running
 };
-/************************************************************* */
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "RequestSent":
-      return { ...state, status: "loading" };
-    case "dataReceived":
-      return {
-        ...state,
-        status: "ready",
-        questions: action.payload.filter(q => q.points === state.difficulty),
-      };
-    case "DataFailed":
-      return { ...state, status: "error" };
-    case "diffChange":
-      return { ...state, difficulty: action.payload };
-    case "QuizStarts":
-      return {
-        ...state,
-        status: "active",
-        ticking: true,
-        secondsRemaining: timeCalculator(state.questions.length),
-        initialTime: timeCalculator(state.questions.length),
-      };
-    case "Tick":
-      if (state.secondsRemaining < 1) return { ...state, status: "finished" };
-      else return { ...state, secondsRemaining: state.secondsRemaining - 1 };
-    case "UserClicked":
-      const { correctOption, points } = state.questions[state.index];
-      const pointsWon = correctOption === action.payload ? points : 0;
-      return {
-        ...state,
-        clickedAnswer: action.payload,
-        answers: [...state.answers, action.payload],
-        score: state.score + pointsWon,
-        ticking: !(state.index === state.questions.length - 1),
-      };
-    case "NextQuestion":
-      if (state.index < state.questions.length - 1)
-        return { ...state, index: state.index + 1, clickedAnswer: null };
-      else return { ...state, status: "finished" };
 
-    case "StartNewGame":
+const quizReducer = (state, action) => {
+  switch (action.type) {
+    case "REQUEST_SENT":
+      return { ...state, status: "loading" }; // Set status to loading when request is sent
+    case "DATA_RECEIVED":
+      return {
+        ...state,
+        status: "ready", // Set status to ready when data is received
+        questions: action.payload.filter(q => q.points === state.difficulty), // Filter questions based on difficulty
+      };
+    case "DATA_FAILED":
+      return { ...state, status: "error" }; // Set status to error if data fetch fails
+    case "CHANGE_DIFFICULTY":
+      return { ...state, difficulty: action.payload }; // Change difficulty level
+    case "QUIZ_STARTED":
+      return {
+        ...state,
+        status: "active", // Set status to active when quiz starts
+        timerRunning: true, // Start the timer
+        timeRemaining: calculateQuizTime(state.questions.length), // Set the initial time
+        initialTime: calculateQuizTime(state.questions.length), // Set the remaining time
+      };
+    case "TICK":
+      if (state.timeRemaining < 1)
+        return { ...state, status: "finished" }; // Finish quiz if time is up
+      else return { ...state, timeRemaining: state.timeRemaining - 1 }; // Decrement remaining time
+    case "ANSWER_SELECTED":
+      const { correctOption, points } =
+        state.questions[state.currentQuestionIndex];
+      const pointsEarned = correctOption === action.payload ? points : 0; // Calculate points earned
+      return {
+        ...state,
+        selectedAnswer: action.payload, // Store the selected answer
+        userAnswers: [...state.userAnswers, action.payload], // Add the answer to the list of answers
+        score: state.score + pointsEarned, // Update score
+        timerRunning: !(
+          state.currentQuestionIndex ===
+          state.questions.length - 1
+        ), // Stop timer if it was the last question
+      };
+    case "NEXT_QUESTION":
+      if (state.currentQuestionIndex < state.questions.length - 1)
+        return {
+          ...state,
+          currentQuestionIndex: state.currentQuestionIndex + 1,
+          selectedAnswer: null,
+        };
+      // Move to next question
+      else return { ...state, status: "finished" }; // Finish quiz if it was the last question
+    case "START_NEW_GAME":
       return {
         ...initialState,
-        questions: state.questions,
-        status: "active",
-        highScore: action?.payload ?? state.highScore,
-        secondsRemaining: timeCalculator(state.questions.length),
-        initialTime: timeCalculator(state.questions.length),
-        ticking: true,
+        questions: state.questions, // Reset state but keep the questions
+        status: "active", // Set status to active
+        highScore: action?.payload ?? state.highScore, // Set high score
+        timeRemaining: calculateQuizTime(state.questions.length), // Reset time
+        initialTime: calculateQuizTime(state.questions.length), // Reset initial time
+        timerRunning: true, // Start the timer
       };
-    case "Finishing":
-      return { ...state, status: "finished" };
-    case "Reviewing":
-      return { ...state, index: 0, status: "reviewing" };
-    case "NavigateReview":
+    case "FINISH_QUIZ":
+      return { ...state, status: "finished" }; // Set status to finished
+    case "REVIEW_ANSWERS":
+      return { ...state, currentQuestionIndex: 0, status: "reviewing" }; // Set status to reviewing
+    case "NAVIGATE_REVIEW":
       const step = action.payload;
       if (
-        state.index + step === state.questions.length ||
-        state.index + step < 0
+        state.currentQuestionIndex + step === state.questions.length ||
+        state.currentQuestionIndex + step < 0
       )
-        return { ...state };
-      return { ...state, index: state.index + step };
-
+        return { ...state }; // Prevent navigating out of bounds
+      return {
+        ...state,
+        currentQuestionIndex: state.currentQuestionIndex + step,
+      }; // Navigate to next or previous question
     default:
-      throw new Error("Action is unknown");
+      throw new Error("Unknown action type"); // Throw error for unknown actions
   }
 };
-/**************************************************************************** */
+
+// Main application component
 export default function App() {
   const [
     {
       questions,
-      answers,
+      userAnswers,
       difficulty,
       status,
-      index,
-      clickedAnswer,
+      currentQuestionIndex,
+      selectedAnswer,
       score,
       highScore,
-      secondsRemaining,
+      timeRemaining,
       initialTime,
-      ticking,
+      timerRunning,
     },
     dispatch,
-  ] = useReducer(reducer, initialState);
+  ] = useReducer(quizReducer, initialState);
 
-  const totalQuestions = questions.length;
-  const totalPoints = questions.reduce((acc, curr) => acc + curr.points, 0);
+  const totalQuestions = questions.length; // Total number of questions
+  const totalPoints = questions.reduce((acc, curr) => acc + curr.points, 0); // Total points available
 
+  // Effect to load data on difficulty change
   useEffect(() => {
     async function loadData() {
-      console.log("loading");
-      dispatch({ type: "RequestSent" });
+      dispatch({ type: "REQUEST_SENT" });
       try {
         const resp = await fetch(
           "https://api.jsonbin.io/v3/b/666b0e7bad19ca34f87886fd",
@@ -143,10 +154,10 @@ export default function App() {
         const data = await resp.json();
 
         if (!data) throw new Error("Something is wrong");
-        console.log(data);
-        dispatch({ type: "dataReceived", payload: data.record.questions });
+
+        dispatch({ type: "DATA_RECEIVED", payload: data.record.questions });
       } catch (error) {
-        dispatch({ type: "DataFailed" });
+        dispatch({ type: "DATA_FAILED" });
       }
     }
     loadData();
@@ -169,53 +180,53 @@ export default function App() {
         {status === "active" && (
           <>
             <Progress
-              index={index}
+              currentQuestionIndex={currentQuestionIndex}
               totalQuestions={totalQuestions}
               totalPoints={totalPoints}
               score={score}
-              clickedAnswer={clickedAnswer}
+              selectedAnswer={selectedAnswer}
             />
             <Question
-              data={questions[index]}
+              data={questions[currentQuestionIndex]}
               dispatch={dispatch}
-              answer={clickedAnswer}
+              selectedAnswer={selectedAnswer}
             />
             <Footer>
-              <NextButton
-                index={index}
-                totalQuestions={totalQuestions}
-                clickedAnswer={clickedAnswer}
-                dispatch={dispatch}
-              />
-              {
-                <Timer
-                  secondsRemaining={secondsRemaining}
+              {selectedAnswer !== null ? (
+                <NextButton
+                  currentQuestionIndex={currentQuestionIndex}
+                  totalQuestions={totalQuestions}
                   dispatch={dispatch}
-                  ticking={ticking}
                 />
-              }
+              ) : null}
+
+              <Timer
+                timeRemaining={timeRemaining}
+                dispatch={dispatch}
+                timerRunning={timerRunning}
+              />
             </Footer>
           </>
         )}
         {status === "finished" && (
           <FinishScreen
             score={score}
-            secondsRemaining={secondsRemaining}
-            initialTime={initialTime}
-            totalPoints={totalPoints}
+            timeRemaining={timeRemaining}
             highScore={highScore}
+            totalPoints={totalPoints}
             dispatch={dispatch}
+            initialTime={initialTime}
           />
         )}
         {status === "reviewing" && (
           <ReviewAnswers
             questions={questions}
             dispatch={dispatch}
-            answers={answers}
-            index={index}
+            currentQuestionIndex={currentQuestionIndex}
+            userAnswers={userAnswers}
+            score={score}
             totalPoints={totalPoints}
             totalQuestions={totalQuestions}
-            score={score}
           />
         )}
       </Main>

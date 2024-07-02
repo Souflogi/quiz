@@ -1,17 +1,17 @@
 import { useEffect } from "react";
 
-function Timer({ secondsRemaining, ticking, dispatch }) {
-  const minutes = Math.floor(secondsRemaining / 60);
-  const seconds = Math.floor(secondsRemaining % 60);
+function Timer({ timeRemaining, timerRunning, dispatch }) {
+  const minutes = Math.floor(timeRemaining / 60);
+  const seconds = Math.floor(timeRemaining % 60);
   useEffect(() => {
-    if (!ticking) return;
+    if (!timerRunning) return;
     const intervalID = setInterval(() => {
-      dispatch({ type: "Tick" });
+      dispatch({ type: "TICK" });
     }, 1000);
     return () => {
       clearInterval(intervalID);
     };
-  }, [dispatch, ticking]);
+  }, [dispatch, timerRunning]);
 
   return (
     <p className="timer">
