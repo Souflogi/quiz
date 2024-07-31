@@ -6,12 +6,12 @@ function FinishScreen({
   dispatch,
   initialTime,
 }) {
-  const percentage = (score * 100) / totalPoints;
-  const minutes = Math.floor((initialTime - timeRemaining) / 60); //initialTime is the initial seconds amount to know how ling the user took to finish
+  const minutes = Math.floor((initialTime - timeRemaining) / 60); //initialTime is the initial seconds amount to know how long the user took to finish
   const seconds = Math.floor((initialTime - timeRemaining) % 60);
 
   let emoji = "";
 
+  const percentage = (score * 100) / totalPoints;
   if (percentage < 20) emoji = "🥲";
   if (percentage > 20 && percentage < 50) emoji = "☹️";
   if (percentage > 50 && percentage < 70) emoji = "🙂";

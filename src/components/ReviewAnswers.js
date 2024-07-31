@@ -32,7 +32,7 @@ function ReviewAnswers({
         </button>
         <button
           className="btn"
-          onClick={() => dispatch({ type: "FINISH_QUIZ" })}
+          onClick={() => dispatch({ type: "FINISH_REVIEW" })}
         >
           ❌
         </button>

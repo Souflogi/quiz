@@ -1,17 +1,17 @@
 import { useEffect } from "react";
 
-function Timer({ timeRemaining, timerRunning, dispatch }) {
+function Timer({ timeRemaining, timerOn, dispatch }) {
   const minutes = Math.floor(timeRemaining / 60);
   const seconds = Math.floor(timeRemaining % 60);
   useEffect(() => {
-    if (!timerRunning) return;
+    if (!timerOn) return;
     const intervalID = setInterval(() => {
       dispatch({ type: "TICK" });
     }, 1000);
     return () => {
       clearInterval(intervalID);
     };
-  }, [dispatch, timerRunning]);
+  }, [dispatch, timerOn]);
 
   return (
     <p className="timer">
@@ -21,3 +21,5 @@ function Timer({ timeRemaining, timerRunning, dispatch }) {
 }
 
 export default Timer;
+
+/* This timer need to be Encapsulated or isolated communicate through typical API and trigger action and to be configurable  */
