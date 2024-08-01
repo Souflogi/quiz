@@ -4,10 +4,10 @@ function FinishScreen({
   highScore,
   totalPoints,
   dispatch,
-  initialTime,
+  duration,
 }) {
-  const minutes = Math.floor((initialTime - timeRemaining) / 60); //initialTime is the initial seconds amount to know how long the user took to finish
-  const seconds = Math.floor((initialTime - timeRemaining) % 60);
+  const minutes = Math.floor((duration + 1 - timeRemaining) / 60); //duration is the initial seconds amount to know how long the user took to finish
+  const seconds = Math.floor((duration + 1 - timeRemaining) % 60);
 
   let emoji = "";
 

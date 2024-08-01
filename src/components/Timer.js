@@ -1,17 +1,25 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-function Timer({ timeRemaining, timerOn, dispatch }) {
-  const minutes = Math.floor(timeRemaining / 60);
-  const seconds = Math.floor(timeRemaining % 60);
+function Timer({
+  duration = 120,
+  tickAction = () => {},
+  endAction = () => {},
+}) {
+  const [time, setTime] = useState(duration);
+  const minutes = Math.floor(time / 60);
+  const seconds = Math.floor(time % 60);
   useEffect(() => {
-    if (!timerOn) return;
     const intervalID = setInterval(() => {
-      dispatch({ type: "TICK" });
+      if (time < 1) endAction();
+      else {
+        setTime(time => time - 1);
+        tickAction(time);
+      }
     }, 1000);
     return () => {
       clearInterval(intervalID);
     };
-  }, [dispatch, timerOn]);
+  }, [endAction, tickAction, time]);
 
   return (
     <p className="timer">
@@ -21,5 +29,3 @@ function Timer({ timeRemaining, timerOn, dispatch }) {
 }
 
 export default Timer;
-
-/* This timer need to be Encapsulated or isolated communicate through typical API and trigger action and to be configurable  */

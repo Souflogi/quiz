@@ -72,9 +72,10 @@ const quizReducer = (state, action) => {
       };
 
     case "TICK":
-      if (state.timeRemaining < 1)
-        return { ...state, status: "finished" }; // Finish quiz if time is up
-      else return { ...state, timeRemaining: state.timeRemaining - 1 }; // Decrement remaining time
+      return { ...state, timeRemaining: action.payload };
+
+    case "TIME_UP":
+      return { ...state, status: "finished" }; // Finish quiz if time is up
 
     case "ANSWER_SELECTED":
       const { correctOption, points } =
@@ -111,7 +112,7 @@ const quizReducer = (state, action) => {
         status: "ready", // Set status to active
         highScore: action?.payload ?? state.highScore, // Set high score
         timeRemaining: calculateQuizTime(state.filtredQuestions.length), // Reset time
-        initialTime: calculateQuizTime(state.filtredQuestions.length), // Reset initial time
+        duration: calculateQuizTime(state.filtredQuestions.length), // Reset initial time
         timerOn: true, // Start the timer
       };
 
@@ -161,7 +162,7 @@ export default function App() {
     (acc, curr) => acc + curr.points,
     0
   ); // Total points available
-  const initialTime = calculateQuizTime(totalQuestions); // dirived state of the quize  duration
+  const duration = calculateQuizTime(totalQuestions); // dirived state of the quize  duration
 
   // Effect to load data on difficulty change
   useEffect(() => {
@@ -224,11 +225,15 @@ export default function App() {
                 </Button>
               ) : null}
 
-              <Timer
-                timeRemaining={timeRemaining}
-                dispatch={dispatch}
-                timerOn={timerOn}
-              />
+              {timerOn && (
+                <Timer
+                  duration={duration}
+                  tickAction={timeLeft =>
+                    dispatch({ type: "TICK", payload: timeLeft })
+                  }
+                  endAction={() => dispatch({ type: "TIME_UP" })}
+                />
+              )}
             </Footer>
           </>
         )}
@@ -239,7 +244,7 @@ export default function App() {
             highScore={highScore}
             totalPoints={totalPoints}
             dispatch={dispatch}
-            initialTime={initialTime}
+            duration={duration}
           />
         )}
         {status === "reviewing" && (
