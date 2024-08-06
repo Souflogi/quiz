@@ -33,7 +33,6 @@ const initialState = {
   score: 0, // User's score
   highScore: 10, // Highest score
   timeRemaining: 0, // Time remaining for the quiz
-  timerOn: false, // Whether the timer is running
 };
 
 const quizReducer = (state, action) => {
@@ -67,7 +66,7 @@ const quizReducer = (state, action) => {
       return {
         ...state,
         status: "active", // Set status to active when quiz starts
-        timerOn: true, // Start the timer
+
         timeRemaining: calculateQuizTime(state.filtredQuestions.length), // Set the initial time
       };
 
@@ -86,10 +85,6 @@ const quizReducer = (state, action) => {
         selectedAnswer: action.payload, // Store the selected answer
         userAnswers: [...state.userAnswers, action.payload], // Add the answer to the list of answers
         score: state.score + pointsEarned, // Update score
-        timerOn: !(
-          state.currentQuestionIndex ===
-          state.filtredQuestions.length - 1
-        ), // Stop timer if it was the last question
       };
 
     case "NEXT_QUESTION":
@@ -113,7 +108,6 @@ const quizReducer = (state, action) => {
         highScore: action?.payload ?? state.highScore, // Set high score
         timeRemaining: calculateQuizTime(state.filtredQuestions.length), // Reset time
         duration: calculateQuizTime(state.filtredQuestions.length), // Reset initial time
-        timerOn: true, // Start the timer
       };
 
     case "REVIEW_ANSWERS":
@@ -152,7 +146,6 @@ export default function App() {
       score,
       highScore,
       timeRemaining,
-      timerOn,
     },
     dispatch,
   ] = useReducer(quizReducer, initialState);
@@ -225,7 +218,7 @@ export default function App() {
                 </Button>
               ) : null}
 
-              {timerOn && (
+              {status === "active" && (
                 <Timer
                   duration={duration}
                   tickAction={timeLeft =>

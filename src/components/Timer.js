@@ -8,6 +8,7 @@ function Timer({
   const [time, setTime] = useState(duration);
   const minutes = Math.floor(time / 60);
   const seconds = Math.floor(time % 60);
+  console.log("ticking");
   useEffect(() => {
     const intervalID = setInterval(() => {
       if (time < 1) endAction();
