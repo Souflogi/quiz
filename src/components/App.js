@@ -17,8 +17,8 @@ const SECONDS_PER_QUESTION = 30; // Time allocated per question in seconds
 const API_KEY = "$2a$10$eo2ivnUnHgDq76H5J4jbLuTquIKreKeji40mzWwJS7/H302VZz8kC"; // API key for accessing Data on jsonbin.io
 const BASE_URL = "https://api.jsonbin.io/v3/b/666b0e7bad19ca34f87886fd";
 
-function calculateQuizTime(numQuestions) {
-  return numQuestions * SECONDS_PER_QUESTION;
+function calculateQuizTime(totalQuestions) {
+  return totalQuestions * SECONDS_PER_QUESTION;
 }
 
 // Initial state of the application
