@@ -1,9 +1,9 @@
-function Options({ options, selectedAnswer, onClick, correctOption }) {
+function Options({ options, clickedAnswer, onClick, correctOption }) {
   const classNamer = index => {
     return `btn btn-option 
           ${
             // Apply "wrong" or "correct" class based on whether an option is incorrect or correct after selection (orange or blue)
-            selectedAnswer !== null
+            clickedAnswer !== null
               ? correctOption !== index
                 ? "wrong"
                 : "correct"
@@ -11,8 +11,8 @@ function Options({ options, selectedAnswer, onClick, correctOption }) {
           }  
           ${
             // Additional class to indicate whether the selected answer was correct or incorrect upon click (red or green)
-            selectedAnswer === index
-              ? selectedAnswer !== correctOption
+            clickedAnswer === index
+              ? clickedAnswer !== correctOption
                 ? "wrong-click"
                 : "right-click"
               : ""
@@ -26,7 +26,7 @@ function Options({ options, selectedAnswer, onClick, correctOption }) {
         // Button for each option
         <button
           // Disable button if an answer is already selected
-          disabled={selectedAnswer !== null}
+          disabled={clickedAnswer !== null}
           key={option} // Unique key for each button
           className={classNamer(i)}
           // Click handler, binds the index of the option to onClick function

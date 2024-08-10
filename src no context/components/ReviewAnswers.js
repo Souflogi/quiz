@@ -1,7 +1,7 @@
 import Progress from "./Progress";
 import Question from "./Question";
 
-function ReviewAnswers({
+function ReviewScreen({
   questions,
   dispatch,
   currentQuestionIndex,
@@ -21,7 +21,7 @@ function ReviewAnswers({
       />
       <Question
         data={questions[currentQuestionIndex]}
-        selectedAnswer={userAnswers[currentQuestionIndex]}
+        clickedAnswer={userAnswers[currentQuestionIndex]}
       />
       <div className="controls">
         <button
@@ -47,4 +47,4 @@ function ReviewAnswers({
   );
 }
 
-export default ReviewAnswers;
+export default ReviewScreen;

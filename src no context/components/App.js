@@ -10,7 +10,7 @@ import Progress from "./Progress";
 import FinishScreen from "./FinishScreen";
 import Timer from "./Timer";
 import Footer from "./Footer";
-import ReviewAnswers from "./ReviewAnswers";
+import ReviewScreen from "./ReviewScreen";
 
 // Constants
 const SECONDS_PER_QUESTION = 30; // Time allocated per question in seconds
@@ -26,9 +26,9 @@ const initialState = {
   questions: [], // Array to store quiz questions
   filtredQuestions: [], // this holds the filtred question by difficulty
   difficulty: 10, // Default difficulty level (quetion points are the same as its difficulty 10 20 30 )
-  status: null, // Status of the quiz: loading, error, ready, active, finished, reviewing
+  status: null, // Status of the quiz: loading, error, ready, active, finished, review
   currentQuestionIndex: 0, // Index of the current question
-  selectedAnswer: null, // The answer selected by the user
+  clickedAnswer: null, // The answer selected by the user
   userAnswers: [], // User's answers
   score: 0, // User's score
   highScore: 10, // Highest score
@@ -82,7 +82,7 @@ const quizReducer = (state, action) => {
       const pointsEarned = correctOption === action.payload ? points : 0; // Calculate points earned
       return {
         ...state,
-        selectedAnswer: action.payload, // Store the selected answer
+        clickedAnswer: action.payload, // Store the selected answer
         userAnswers: [...state.userAnswers, action.payload], // Add the answer to the list of answers
         score: state.score + pointsEarned, // Update score
       };
@@ -92,7 +92,7 @@ const quizReducer = (state, action) => {
         return {
           ...state,
           currentQuestionIndex: state.currentQuestionIndex + 1,
-          selectedAnswer: null,
+          clickedAnswer: null,
         };
       // Move to next question
       else return { ...state, status: "finished" }; // Finish quiz if it was the last question
@@ -111,7 +111,7 @@ const quizReducer = (state, action) => {
       };
 
     case "REVIEW_ANSWERS":
-      return { ...state, currentQuestionIndex: 0, status: "reviewing" }; // Set status to reviewing
+      return { ...state, currentQuestionIndex: 0, status: "review" }; // Set status to review
 
     case "NAVIGATE_REVIEW":
       const step = action.payload;
@@ -142,7 +142,7 @@ export default function App() {
       difficulty,
       status,
       currentQuestionIndex,
-      selectedAnswer,
+      clickedAnswer,
       score,
       highScore,
       timeRemaining,
@@ -202,15 +202,15 @@ export default function App() {
               totalQuestions={totalQuestions}
               totalPoints={totalPoints}
               score={score}
-              selectedAnswer={selectedAnswer}
+              clickedAnswer={clickedAnswer}
             />
             <Question
               data={filtredQuestions[currentQuestionIndex]}
               dispatch={dispatch}
-              selectedAnswer={selectedAnswer}
+              clickedAnswer={clickedAnswer}
             />
             <Footer>
-              {selectedAnswer !== null ? (
+              {clickedAnswer !== null ? (
                 <Button action={() => dispatch({ type: "NEXT_QUESTION" })}>
                   {currentQuestionIndex === totalQuestions - 1
                     ? "Open Results"
@@ -240,8 +240,8 @@ export default function App() {
             duration={duration}
           />
         )}
-        {status === "reviewing" && (
-          <ReviewAnswers
+        {status === "review" && (
+          <ReviewScreen
             questions={filtredQuestions}
             dispatch={dispatch}
             currentQuestionIndex={currentQuestionIndex}

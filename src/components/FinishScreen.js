@@ -1,11 +1,9 @@
-function FinishScreen({
-  score,
-  timeRemaining,
-  highScore,
-  totalPoints,
-  dispatch,
-  duration,
-}) {
+import { useQuizContext } from "../context/QuizContext";
+
+function FinishScreen() {
+  const { score, timeRemaining, highScore, totalPoints, dispatch, duration } =
+    useQuizContext();
+
   const minutes = Math.floor((duration + 1 - timeRemaining) / 60); //duration is the initial seconds amount to know how long the user took to finish
   const seconds = Math.floor((duration + 1 - timeRemaining) % 60);
 

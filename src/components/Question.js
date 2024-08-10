@@ -1,7 +1,10 @@
+import { useQuizContext } from "../context/QuizContext";
 import Options from "./Options";
 
-function Question({ data, dispatch, selectedAnswer }) {
-  const { question, options, correctOption } = data;
+function Question() {
+  const { currentQuestionData, dispatch, clickedAnswer } = useQuizContext();
+
+  const { question, options, correctOption } = currentQuestionData;
 
   function onClick(index) {
     dispatch({ type: "ANSWER_SELECTED", payload: index });
@@ -14,7 +17,7 @@ function Question({ data, dispatch, selectedAnswer }) {
         options={options}
         onClick={onClick}
         correctOption={correctOption}
-        selectedAnswer={selectedAnswer}
+        clickedAnswer={clickedAnswer}
       />
     </>
   );

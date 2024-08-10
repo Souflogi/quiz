@@ -3,12 +3,12 @@ function Progress({
   totalQuestions,
   totalPoints,
   score,
-  selectedAnswer,
+  clickedAnswer,
 }) {
   return (
     <header className="progress">
       <progress
-        value={currentQuestionIndex + Number(selectedAnswer !== null)}
+        value={currentQuestionIndex + Number(clickedAnswer !== null)}
         max={totalQuestions}
       />
       <p>

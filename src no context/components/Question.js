@@ -1,6 +1,6 @@
 import Options from "./Options";
 
-function Question({ data, dispatch, selectedAnswer }) {
+function Question({ data, dispatch, clickedAnswer }) {
   const { question, options, correctOption } = data;
 
   function onClick(index) {
@@ -14,7 +14,7 @@ function Question({ data, dispatch, selectedAnswer }) {
         options={options}
         onClick={onClick}
         correctOption={correctOption}
-        selectedAnswer={selectedAnswer}
+        clickedAnswer={clickedAnswer}
       />
     </>
   );
