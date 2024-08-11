@@ -12,7 +12,7 @@ function Question() {
 
   return (
     <>
-      <h4>{question}</h4>
+      <h4 className="question">{question}</h4>
       <Options
         options={options}
         onClick={onClick}
