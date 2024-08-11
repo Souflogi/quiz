@@ -206,11 +206,3 @@ const useQuizContext = () => {
 };
 
 export { useQuizContext, QuizContextProvider };
-
-/*
-start with understanding and cleaning the code for example inside progress component there is a none used prop 
-
-GOOD LUCK YOU GOT IT this is your code you made this now just redo what you did BOSS
-
-
-*/
