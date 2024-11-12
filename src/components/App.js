@@ -36,22 +36,19 @@ export default function App() {
             <Progress />
             <Question />
             <Footer>
-              {clickedAnswer !== null ? (
+              <Timer
+                duration={duration}
+                tickAction={timeLeft =>
+                  dispatch({ type: "TICK", payload: timeLeft })
+                }
+                endAction={() => dispatch({ type: "TIME_UP" })}
+              />
+              {clickedAnswer !== null && (
                 <Button action={() => dispatch({ type: "NEXT_QUESTION" })}>
                   {currentQuestionIndex === totalQuestions - 1
                     ? "Open Results"
                     : "NEXT"}
                 </Button>
-              ) : null}
-
-              {status === "active" && (
-                <Timer
-                  duration={duration}
-                  tickAction={timeLeft =>
-                    dispatch({ type: "TICK", payload: timeLeft })
-                  }
-                  endAction={() => dispatch({ type: "TIME_UP" })}
-                />
               )}
             </Footer>
           </>

@@ -102,6 +102,7 @@ h4 {
   padding: 1rem;
 }
 
+/**************************progress*********/
 .progress {
   margin-bottom: 4rem;
   display: grid;
@@ -129,6 +130,7 @@ progress {
   border-radius: 100px;
 }
 
+/************************** *********/
 select {
   display: block;
   font-family: inherit;

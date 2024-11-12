@@ -11,20 +11,25 @@ function Timer({
   console.log("ticking");
   useEffect(() => {
     const intervalID = setInterval(() => {
-      if (time < 1) endAction();
-      else {
-        setTime(time => time - 1);
-        tickAction(time);
-      }
+      setTime(time => {
+        if (time <= 1) {
+          endAction();
+          clearInterval(intervalID);
+          return 0;
+        }
+        tickAction(time - 1);
+        return time - 1;
+      });
     }, 1000);
     return () => {
       clearInterval(intervalID);
     };
-  }, [endAction, tickAction, time]);
+  }, [endAction, tickAction]);
 
   return (
     <p className="timer">
-      {minutes.toString().padStart(2, 0)}:{seconds.toString().padStart(2, 0)}
+      {minutes.toString().padStart(2, "0")}:
+      {seconds.toString().padStart(2, "0")}
     </p>
   );
 }

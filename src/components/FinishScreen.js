@@ -1,19 +1,30 @@
 import { useQuizContext } from "../context/QuizContext";
 
 function FinishScreen() {
-  const { score, timeRemaining, highScore, totalPoints, dispatch, duration } =
+  const { score, highScore, totalPoints, dispatch, duration, timeRemaining } =
     useQuizContext();
 
   const minutes = Math.floor((duration + 1 - timeRemaining) / 60); //duration is the initial seconds amount to know how long the user took to finish
   const seconds = Math.floor((duration + 1 - timeRemaining) % 60);
 
-  let emoji = "";
+  // Emoji map based on score percentage
+  const emojiMap = [
+    { min: 0, max: 20, emoji: "🥲" },
+    { min: 21, max: 50, emoji: "☹️" },
+    { min: 51, max: 70, emoji: "🙂" },
+    { min: 71, max: 100, emoji: "🤩" },
+  ];
 
+  function getEmoji(percentage) {
+    const range = emojiMap.find(
+      ({ min, max }) => percentage >= min && percentage <= max
+    );
+    return range ? range.emoji : "";
+  }
+
+  // Usage
   const percentage = (score * 100) / totalPoints;
-  if (percentage < 20) emoji = "🥲";
-  if (percentage > 20 && percentage < 50) emoji = "☹️";
-  if (percentage > 50 && percentage < 70) emoji = "🙂";
-  if (percentage > 70) emoji = "☺️";
+  const emoji = getEmoji(percentage);
 
   function NewGamehandler() {
     if (score < highScore) dispatch({ type: "START_NEW_GAME" });
@@ -27,12 +38,7 @@ function FinishScreen() {
         out of {totalPoints} ({Math.ceil(percentage)}%)
         {emoji}
       </p>
-      {score < highScore ? (
-        <p className="highscore" style={{ color: "red" }}>
-          (😖 Did not beat the highscore of <strong>{highScore}</strong>{" "}
-          points.)
-        </p>
-      ) : (
+      {score > highScore && (
         <p className="highscore" style={{ color: "greenyellow" }}>
           (Congratulations You scored the Top Score 🥳)
         </p>
