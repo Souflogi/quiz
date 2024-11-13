@@ -1,64 +1,70 @@
-```javascript
-const date = new Date();
-date.setDate(date.getDate() + state.count);
-```
+# Quiz App
 
-### Step-by-Step Explanation
+This is a React-based Quiz Application that allows users to select quiz difficulty, answer questions, and review their results. This README will help you get started with understanding and running the project.
 
-1. **Create a New Date Object:**
+## Features
 
-   ```javascript
-   const date = new Date();
+- **Difficulty Level Selection**: Filter questions by difficulty (e.g., 10, 20, 30 points).
+- **Dynamic Quiz Flow**: Start a quiz, answer questions, and automatically proceed to the next one.
+- **Time Management**: Each question comes with a set time limit to answer.
+- **Review Mode**: After completing the quiz, users can review their answers and navigate through each question.
+- **High Score Tracking**: Track and store the highest score between sessions.
+
+## Tech Stack
+
+- **React**: For UI components and state management.
+- **React Context and Reducer**: To manage state globally, ensuring clean and efficient application state transitions.
+- **JavaScript**: Handles logic, actions, and event management within the application.
+- **CSS Modules**: For styling components in a modular and reusable manner.
+
+## Installation and Setup
+
+To run this project locally, follow these steps:
+
+### Prerequisites
+
+- Make sure you have **Node.js** and **npm** or **yarn** installed.
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   ```
+2. Navigate into the project directory:
+   ```bash
+   cd quiz-app
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+   or
+   ```bash
+   yarn install
    ```
 
-   - `new Date()` creates a new `Date` object that represents the current date and time.
-   - The `date` variable now holds this `Date` object.
+### Running the Project
 
-2. **Get the Current Day of the Month:**
+- To start the development server, run:
+  ```bash
+  npm start
+  ```
+  or
+  ```bash
+  yarn start
+  ```
+- Open your browser and navigate to `http://localhost:3000` to view the application.
 
-   ```javascript
-   date.getDate();
-   ```
+## State Management Overview
 
-   - The `getDate()` method returns the day of the month (from 1 to 31) for the specified date according to local time.
-   - For example, if today is July 2, `date.getDate()` would return `2`.
+The quiz app uses **React Context** and **useReducer** for managing state. Below is a brief description of how the main pieces fit together:
 
-3. **Add `state.count` to the Current Day:**
-
-   ```javascript
-   date.getDate() + state.count;
-   ```
-
-   - Assuming `state.count` is a variable holding a number, this expression adds `state.count` to the current day of the month.
-   - For example, if `state.count` is `5` and today is July 2, this would result in `2 + 5`, which equals `7`.
-
-4. **Set the New Day of the Month:**
-   ```javascript
-   date.setDate(date.getDate() + state.count);
-   ```
-   - The `setDate()` method sets the day of the `Date` object to the specified date.
-   - By passing in the value `date.getDate() + state.count`, it updates the `date` object to reflect the new date.
-   - Continuing the example, if today is July 2 and `state.count` is `5`, after this operation, `date` will represent July 7.
-
-### Complete Example
-
-Here's a full example for clarity:
-
-```javascript
-const state = { count: 5 }; // Example count value
-
-const date = new Date(); // Create a new Date object for the current date (e.g., July 2)
-console.log(date); // Outputs: Current date (e.g., "Tue Jul 02 2024 ...")
-
-date.setDate(date.getDate() + state.count); // Adds 5 days to the current date
-console.log(date); // Outputs: Updated date (e.g., "Sun Jul 07 2024 ...")
-```
-
-### Summary
-
-- The `new Date()` creates a `Date` object representing the current date and time.
-- The `getDate()` method retrieves the day of the month from the `Date` object.
-- Adding `state.count` to this value calculates a new day of the month.
-- The `setDate()` method updates the `Date` object to this new date.
-
-This way, the code dynamically adjusts the date based on the value of `state.count`.
+- **Context Provider**: The `QuizContextProvider` wraps the entire application, making quiz-related state accessible anywhere within the app.
+- **Reducer Actions**: The reducer manages state through various actions, such as:
+  - **`REQUEST_SENT`**: Sets loading state when fetching data.
+  - **`DATA_RECEIVED`**: Updates state with received questions.
+  - **`QUIZ_STARTED`**: Starts the quiz and sets the countdown timer.
+  - **`ANSWER_SELECTED`**: Handles user answer selection and score calculation.
+  - **`NEXT_QUESTION`**: Proceeds to the next question.
+  - **`REVIEW_ANSWERS`**: Sets the state to review mode afte
